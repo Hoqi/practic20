@@ -1,4 +1,4 @@
-package com.hoqi.practic20.domain;
+package com.hoqi.practic20.models;
 
 import javax.persistence.*;
 
@@ -14,12 +14,23 @@ public class ShopCartItem {
     private int count;
 
     @ManyToOne(targetEntity = Product.class)
-    @JoinColumn(name = "product_id",referencedColumnName = "vendorCode")
+    @JoinColumn(name = "product_id",referencedColumnName = "vendor_code")
     private Product product;
 
     @ManyToOne(targetEntity = ShopCart.class)
     @JoinColumn(name = "shop_cart_id",referencedColumnName = "id")
     private ShopCart shopCart;
+
+    public ShopCartItem(){
+
+    }
+
+    public ShopCartItem(Product product,ShopCart cart){
+        this.shopCart = cart;
+        this.product = product;
+        this.price = product.getPrice();
+        this.count = 1;
+    }
 
     public int getId() {
         return id;
@@ -59,5 +70,9 @@ public class ShopCartItem {
 
     public void setShopCart(ShopCart shopCart) {
         this.shopCart = shopCart;
+    }
+
+    public void IncreaseCount(){
+        this.count++;
     }
 }

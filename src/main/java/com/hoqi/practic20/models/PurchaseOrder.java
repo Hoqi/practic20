@@ -1,4 +1,4 @@
-package com.hoqi.practic20.domain;
+package com.hoqi.practic20.models;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -19,9 +19,12 @@ public class PurchaseOrder {
 
     private String paymentMethod;
 
-    @OneToOne(cascade = CascadeType.ALL,targetEntity = ShopCart.class)
+
+    @OneToOne(cascade = CascadeType.ALL,targetEntity = ShopCart.class,fetch = FetchType.LAZY)
     @JoinColumn(name = "shop_cart_id",referencedColumnName = "id")
     private ShopCart shopCart;
+
+
 
     public PurchaseOrder() {
     }

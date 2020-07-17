@@ -1,6 +1,5 @@
-package com.hoqi.practic20.domain;
+package com.hoqi.practic20.models;
 
-import ch.qos.logback.core.net.server.Client;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -14,15 +13,17 @@ public class ShopCart {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @OneToOne(cascade = CascadeType.ALL,targetEntity = User.class)
-    @JoinColumn(name = "client_id",referencedColumnName = "id")
-    @JsonIgnore
-    private User client;
 
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY,mappedBy = "shopCart",targetEntity = PurchaseOrder.class)
+    @Column(name = "client_id")
+    private Integer clientId;
+
+    //статус
+
+    //@JsonIgnore
+    @OneToOne(fetch = FetchType.EAGER,mappedBy = "shopCart",targetEntity = PurchaseOrder.class)
     private PurchaseOrder purchaseOrder;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "shopCart",targetEntity = ShopCartItem.class)
     private Set<ShopCartItem> shopCartItems;
 
@@ -30,8 +31,8 @@ public class ShopCart {
         shopCartItems = new HashSet<ShopCartItem>();
     }
 
-    public ShopCart(User client) {
-        this.client = client;
+    public ShopCart(Integer client_id) {
+        this.clientId = client_id;
         shopCartItems = new HashSet<ShopCartItem>();
     }
 
@@ -43,12 +44,12 @@ public class ShopCart {
         this.id = id;
     }
 
-    public User getClient() {
-        return client;
+    public Integer getClient() {
+        return clientId;
     }
 
-    public void setClient(User client) {
-        this.client = client;
+    public void setClient(Integer client) {
+        this.clientId = client;
     }
 
     public PurchaseOrder getPurchaseOrder() {

@@ -1,6 +1,6 @@
 package com.hoqi.practic20.controllers;
 
-import com.hoqi.practic20.domain.User;
+import com.hoqi.practic20.models.User;
 import com.hoqi.practic20.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

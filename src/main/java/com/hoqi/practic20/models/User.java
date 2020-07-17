@@ -1,7 +1,5 @@
-package com.hoqi.practic20.domain;
+package com.hoqi.practic20.models;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
@@ -17,9 +15,7 @@ public class User {
 
     private String fio;
 
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY,mappedBy = "client",targetEntity = ShopCart.class)
-    private ShopCart shopCart;
+
 
     public User(){
 
@@ -53,11 +49,5 @@ public class User {
         this.fio = fio;
     }
 
-    public ShopCart getShopCart() {
-        return shopCart;
-    }
 
-    public void setShopCart(ShopCart shopCart) {
-        this.shopCart = shopCart;
-    }
 }

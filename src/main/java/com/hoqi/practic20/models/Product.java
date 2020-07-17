@@ -1,4 +1,4 @@
-package com.hoqi.practic20.domain;
+package com.hoqi.practic20.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -10,6 +10,7 @@ import java.util.Set;
 @Table(name = "product")
 public class Product {
     @Id
+    @Column(name = "vendor_code")
     private Integer vendorCode;
 
     private Double price;
@@ -18,8 +19,9 @@ public class Product {
 
     private String description;
 
-    @OneToMany(mappedBy = "product",fetch = FetchType.LAZY,targetEntity = ShopCartItem.class)
     @JsonIgnore
+    @OneToMany(mappedBy = "product",targetEntity = ShopCartItem.class)
+
     private Set<ShopCartItem> shopCartItems;
 
     public Product(){
