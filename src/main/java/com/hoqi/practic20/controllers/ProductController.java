@@ -1,9 +1,5 @@
 package com.hoqi.practic20.controllers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import com.hoqi.practic20.domain.Product;
 import com.hoqi.practic20.repositories.ProductRepository;
@@ -13,8 +9,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("product")
 public class ProductController {
-
-
 
     @Autowired
     private ProductRepository productRepository;
@@ -26,7 +20,15 @@ public class ProductController {
         return productRepository.findAll();
     }
 
+    @PostMapping
+    public void insert(@RequestBody Product product){
+        System.out.println(product.toString());
+        productRepository.save(product);
+    }
 
-
+    @GetMapping("{id}")
+    public Product getOne(@PathVariable Integer id){
+        return productRepository.findById(id).get();
+    }
 
 }
