@@ -17,7 +17,8 @@ public class ShopCart {
     @Column(name = "client_id")
     private Integer clientId;
 
-    //статус
+    private Integer status;
+
 
     //@JsonIgnore
     @OneToOne(fetch = FetchType.EAGER,mappedBy = "shopCart",targetEntity = PurchaseOrder.class)
@@ -44,11 +45,11 @@ public class ShopCart {
         this.id = id;
     }
 
-    public Integer getClient() {
+    public Integer getClientId() {
         return clientId;
     }
 
-    public void setClient(Integer client) {
+    public void setClientId(Integer client) {
         this.clientId = client;
     }
 
@@ -68,5 +69,11 @@ public class ShopCart {
         this.shopCartItems = shopCartItems;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
 
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 }

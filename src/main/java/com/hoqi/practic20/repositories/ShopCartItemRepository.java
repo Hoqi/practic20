@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.Query;
 public interface ShopCartItemRepository extends JpaRepository<ShopCartItem, Integer> {
 
     @Query("Select i from ShopCartItem i where i.product.vendorCode = ?1 and i.shopCart.id = ?2")
-    public ShopCartItem findByProductIdAndCartID(Integer productId,Integer CartId);
+    public ShopCartItem findByVendorCodeAndCartId(Integer productId,Integer CartId);
 }

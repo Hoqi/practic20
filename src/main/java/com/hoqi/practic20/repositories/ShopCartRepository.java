@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 
 
 public interface ShopCartRepository extends JpaRepository<ShopCart, Integer> {
-    @Query("Select c from ShopCart c where c.id = (select max(c2.id) from ShopCart c2 where c2.clientId = ?1)")
-    ShopCart findByClientId(Integer id);
-
+    Iterable<ShopCart> findByClientId(Integer id);
+    ShopCart findByClientIdAndStatus(Integer clientId,Integer status);
 }

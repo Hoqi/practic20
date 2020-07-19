@@ -15,8 +15,6 @@ public class User {
 
     private String fio;
 
-
-
     public User(){
 
     }
