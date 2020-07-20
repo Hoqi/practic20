@@ -2,6 +2,7 @@
 var tempUserId = 1;
 var productApi = Vue.resource('/products')
 var cartApi = Vue.resource('users{/id}/cart/add{/vendorCode}')
+var createCartApi = Vue.resource('users{/id}/cart/create')
 
 Vue.component('product-row',{
     data: function() {
@@ -14,12 +15,18 @@ Vue.component('product-row',{
         '<td><input style="margin-left: 50px" type="button" value="В корзину" v-on:click="add"></td></tr>',
     methods: {
         add: function () {
-            cartApi.save({id: tempUserId, vendorCode: this.vendorCode},'add').then(response => {
-             console.log(response)
-            },reason => {
-                console.log(reason);
+            createCartApi.save({id: tempUserId},'create').then(response => {
+                cartApi.save({id: tempUserId, vendorCode: this.vendorCode},'add').then(response => {
+                    console.log(response)
+                },reason => {
+                    cartApi.save({id: tempUserId, vendorCode: this.vendorCode},'add').then(response => {
+                        console.log(response)
+                })
             })
-        }
+        })
+        },
+
+
     }
 
 })
@@ -45,5 +52,14 @@ var app = new Vue({
         )
 
     }
-})
+});
+/*
+var sumbitForm = new Vue({
+   el: '#submit',
+   template: `<input type="text" v-model:>`,
+   data: {
+       address: ''
 
+   }
+})
+*/

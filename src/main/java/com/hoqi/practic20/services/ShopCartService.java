@@ -91,6 +91,7 @@ public class ShopCartService {
         ShopCart cart = shopCartRepository.findByClientIdAndStatus(userId,0);
         if (cart != null || cart.getShopCartItems() != null){
             cart.setStatus(1);
+            shopCartRepository.save(cart);
         }
         else return false;
         return purchaseOrderService.create(productionMethod,paymentMethod,address,cart);
