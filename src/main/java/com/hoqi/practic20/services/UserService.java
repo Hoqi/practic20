@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -16,18 +18,26 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User addUser(User user){
-        return this.userRepository.findByEmail(user.getEmail())
-                .orElse(this.userRepository.save(user));
+    public boolean addUser(User user){
+        if (!this.userRepository.findByEmail(user.getEmail()).isPresent()){
+            this.userRepository.save(user);
+            return true;
+        }
+         return false;
     }
 
     public User getUser(Integer id){
-        return this.userRepository.findById(id).get();
+        return this.userRepository.findById(id).orElse(null);
     }
 
-    public User ChangeEmail(Integer Id,String newEmail){
-        User targetUser = this.userRepository.findById(Id).get();
-        targetUser.setEmail(newEmail);
-        return this.userRepository.save(targetUser);
+    public boolean ChangeEmail(Integer Id,String newEmail){
+        Optional<User> targetUser = this.userRepository.findById(Id);
+        if (targetUser.isPresent()) {
+            User user = targetUser.get();
+            user.setEmail(newEmail);
+            userRepository.save(user);
+        }
+        return false;
+
     }
 }

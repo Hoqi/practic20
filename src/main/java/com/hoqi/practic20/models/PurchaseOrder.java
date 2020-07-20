@@ -29,8 +29,8 @@ public class PurchaseOrder {
     public PurchaseOrder() {
     }
 
-    public PurchaseOrder(Date orderDate, String address, String productionMethod, String paymentMethod, ShopCart shopCart) {
-        this.orderDate = orderDate;
+    public PurchaseOrder(String address, String productionMethod, String paymentMethod, ShopCart shopCart) {
+        this.orderDate = new Date();
         this.address = address;
         this.productionMethod = productionMethod;
         this.paymentMethod = paymentMethod;

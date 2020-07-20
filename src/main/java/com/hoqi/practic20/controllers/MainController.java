@@ -8,8 +8,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MainController {
 
     @GetMapping("/")
-    public String demoRedirect() {
+    public String index() {
         return "index.html";
     }
-    
+
+    @GetMapping("/account")
+    public String account(){
+        return "cart.html";
+    }
 }

@@ -15,7 +15,7 @@ public class ProductService {
     }
 
     public Product get(Integer vendorCode){
-        return productRepository.findById(vendorCode).get();
+        return productRepository.findById(vendorCode).orElse(null);
     }
 
     public Iterable<Product> getList(){

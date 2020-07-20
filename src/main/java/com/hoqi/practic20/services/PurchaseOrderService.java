@@ -29,7 +29,7 @@ public class PurchaseOrderService {
             || address.equals("")){
             return false;
         }
-        PurchaseOrder order = new PurchaseOrder(new Date(),address,productionMethod,paymentMethod,cart);
+        PurchaseOrder order = new PurchaseOrder(address,productionMethod,paymentMethod,cart);
         purchaseOrderRepository.save(order);
         return true;
     }

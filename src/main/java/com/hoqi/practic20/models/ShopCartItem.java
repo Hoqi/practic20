@@ -1,5 +1,7 @@
 package com.hoqi.practic20.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -17,6 +19,7 @@ public class ShopCartItem {
     @JoinColumn(name = "product_id",referencedColumnName = "vendor_code")
     private Product product;
 
+    @JsonIgnore
     @ManyToOne(targetEntity = ShopCart.class)
     @JoinColumn(name = "shop_cart_id",referencedColumnName = "id")
     private ShopCart shopCart;

@@ -20,11 +20,11 @@ public class ShopCart {
     private Integer status;
 
 
-    //@JsonIgnore
+    @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER,mappedBy = "shopCart",targetEntity = PurchaseOrder.class)
     private PurchaseOrder purchaseOrder;
 
-    @JsonIgnore
+
     @OneToMany(mappedBy = "shopCart",targetEntity = ShopCartItem.class)
     private Set<ShopCartItem> shopCartItems;
 

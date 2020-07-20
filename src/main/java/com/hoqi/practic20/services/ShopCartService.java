@@ -13,7 +13,7 @@ public class ShopCartService {
 
 
     private final ProductService productService;
-    private PurchaseOrderService purchaseOrderService;
+    private final PurchaseOrderService purchaseOrderService;
 
     @Autowired
     public ShopCartService(ShopCartRepository shopCartRepository,
@@ -29,6 +29,7 @@ public class ShopCartService {
     public boolean create(Integer userId){
         if(shopCartRepository.findByClientIdAndStatus(userId,0) == null){
             ShopCart newCart = new ShopCart(userId);
+            shopCartRepository.save(newCart);
             return true;
         }
         return false;
@@ -48,8 +49,8 @@ public class ShopCartService {
             }
             else {
                 item = new ShopCartItem(product,cart);
-                shopCartItemRepository.save(item);
             }
+            shopCartItemRepository.save(item);
             return true;
         }
         return false;
@@ -63,6 +64,7 @@ public class ShopCartService {
             if (item != null) {
                 item.setCount(item.getCount() - 1);
                 if (item.getCount() == 0) deleteFull(userId,vendorCode);
+                else shopCartItemRepository.save(item);
                 return true;
             }
         }
