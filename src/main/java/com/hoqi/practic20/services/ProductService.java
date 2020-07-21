@@ -10,15 +10,15 @@ public class ProductService {
     private ProductRepository productRepository;
 
     @Autowired
-    public ProductService(ProductRepository productRepository){
+    public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
-    public Product get(Integer vendorCode){
+    public Product get(Integer vendorCode) {
         return productRepository.findById(vendorCode).orElse(null);
     }
 
-    public Iterable<Product> getList(){
+    public Iterable<Product> getList() {
         return productRepository.findAll();
     }
 }

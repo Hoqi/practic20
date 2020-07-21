@@ -19,15 +19,15 @@ public class ShopCartService {
     public ShopCartService(ShopCartRepository shopCartRepository,
                            ShopCartItemRepository shopCartItemRepository,
                            ProductService productService,
-                           PurchaseOrderService purchaseOrderService){
+                           PurchaseOrderService purchaseOrderService) {
         this.shopCartRepository = shopCartRepository;
         this.shopCartItemRepository = shopCartItemRepository;
         this.productService = productService;
         this.purchaseOrderService = purchaseOrderService;
     }
 
-    public boolean create(Integer userId){
-        if(shopCartRepository.findByClientIdAndStatus(userId,0) == null){
+    public boolean create(Integer userId) {
+        if (shopCartRepository.findByClientIdAndStatus(userId, 0) == null) {
             ShopCart newCart = new ShopCart(userId);
             shopCartRepository.save(newCart);
             return true;
@@ -35,20 +35,19 @@ public class ShopCartService {
         return false;
     }
 
-    public ShopCart get(Integer userId){
-        return  shopCartRepository.findByClientIdAndStatus(userId,0);
+    public ShopCart get(Integer userId) {
+        return shopCartRepository.findByClientIdAndStatus(userId, 0);
     }
 
-    public boolean addItem(Integer userId,Integer vendorCode){
-        ShopCart cart = shopCartRepository.findByClientIdAndStatus(userId,0);
+    public boolean addItem(Integer userId, Integer vendorCode) {
+        ShopCart cart = shopCartRepository.findByClientIdAndStatus(userId, 0);
         Product product = productService.get(vendorCode);
-        if (cart != null && product != null){
-            ShopCartItem item = shopCartItemRepository.findByVendorCodeAndCartId(vendorCode,userId);
-            if (item != null){
+        if (cart != null && product != null) {
+            ShopCartItem item = shopCartItemRepository.findByVendorCodeAndCartId(vendorCode, userId);
+            if (item != null) {
                 item.setCount(item.getCount() + 1);
-            }
-            else {
-                item = new ShopCartItem(product,cart);
+            } else {
+                item = new ShopCartItem(product, cart);
             }
             shopCartItemRepository.save(item);
             return true;
@@ -56,14 +55,14 @@ public class ShopCartService {
         return false;
     }
 
-    public boolean deleteOne(Integer userId,Integer vendorCode){
-        ShopCart cart = shopCartRepository.findByClientIdAndStatus(userId,0);
+    public boolean deleteOne(Integer userId, Integer vendorCode) {
+        ShopCart cart = shopCartRepository.findByClientIdAndStatus(userId, 0);
         Product product = productService.get(vendorCode);
-        if (cart != null && product != null){
-            ShopCartItem item = shopCartItemRepository.findByVendorCodeAndCartId(vendorCode,userId);
+        if (cart != null && product != null) {
+            ShopCartItem item = shopCartItemRepository.findByVendorCodeAndCartId(vendorCode, userId);
             if (item != null) {
                 item.setCount(item.getCount() - 1);
-                if (item.getCount() == 0) deleteFull(userId,vendorCode);
+                if (item.getCount() == 0) deleteFull(userId, vendorCode);
                 else shopCartItemRepository.save(item);
                 return true;
             }
@@ -71,11 +70,11 @@ public class ShopCartService {
         return false;
     }
 
-    public boolean deleteFull(Integer userId,Integer vendorCode){
-        ShopCart cart = shopCartRepository.findByClientIdAndStatus(userId,0);
+    public boolean deleteFull(Integer userId, Integer vendorCode) {
+        ShopCart cart = shopCartRepository.findByClientIdAndStatus(userId, 0);
         Product product = productService.get(vendorCode);
-        if (cart != null && product != null){
-            ShopCartItem item = shopCartItemRepository.findByVendorCodeAndCartId(vendorCode,userId);
+        if (cart != null && product != null) {
+            ShopCartItem item = shopCartItemRepository.findByVendorCodeAndCartId(vendorCode, userId);
             if (item != null) {
                 shopCartItemRepository.delete(item);
                 return true;
@@ -87,14 +86,13 @@ public class ShopCartService {
     public boolean submit(Integer userId,
                           String productionMethod,
                           String paymentMethod,
-                          String address){
-        ShopCart cart = shopCartRepository.findByClientIdAndStatus(userId,0);
-        if (cart != null || cart.getShopCartItems() != null){
+                          String address) {
+        ShopCart cart = shopCartRepository.findByClientIdAndStatus(userId, 0);
+        if (cart != null || cart.getShopCartItems() != null) {
             cart.setStatus(1);
             shopCartRepository.save(cart);
-        }
-        else return false;
-        return purchaseOrderService.create(productionMethod,paymentMethod,address,cart);
+        } else return false;
+        return purchaseOrderService.create(productionMethod, paymentMethod, address, cart);
     }
 
 }

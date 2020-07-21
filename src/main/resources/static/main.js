@@ -15,15 +15,8 @@ Vue.component('product-row',{
         '<td><input style="margin-left: 50px" type="button" value="В корзину" v-on:click="add"></td></tr>',
     methods: {
         add: function () {
-            createCartApi.save({id: tempUserId},'create').then(response => {
-                cartApi.save({id: tempUserId, vendorCode: this.vendorCode},'add').then(response => {
-                    console.log(response)
-                },reason => {
-                    cartApi.save({id: tempUserId, vendorCode: this.vendorCode},'add').then(response => {
-                        console.log(response)
-                })
-            })
-        })
+            cartApi.save({id: tempUserId, vendorCode: this.vendorCode},'add').then(response => {
+                console.log(response)})
         },
 
 

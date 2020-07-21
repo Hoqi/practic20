@@ -14,23 +14,23 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    public boolean addUser(User user){
-        if (!this.userRepository.findByEmail(user.getEmail()).isPresent()){
+    public boolean addUser(User user) {
+        if (!this.userRepository.findByEmail(user.getEmail()).isPresent()) {
             this.userRepository.save(user);
             return true;
         }
-         return false;
+        return false;
     }
 
-    public User getUser(Integer id){
+    public User getUser(Integer id) {
         return this.userRepository.findById(id).orElse(null);
     }
 
-    public boolean ChangeEmail(Integer Id,String newEmail){
+    public boolean ChangeEmail(Integer Id, String newEmail) {
         Optional<User> targetUser = this.userRepository.findById(Id);
         if (targetUser.isPresent()) {
             User user = targetUser.get();

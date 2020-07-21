@@ -15,7 +15,7 @@ public class PurchaseOrderService {
     private PurchaseOrderRepository purchaseOrderRepository;
 
     @Autowired
-    public PurchaseOrderService(PurchaseOrderRepository purchaseOrderRepository){
+    public PurchaseOrderService(PurchaseOrderRepository purchaseOrderRepository) {
         this.purchaseOrderRepository = purchaseOrderRepository;
     }
 
@@ -24,21 +24,21 @@ public class PurchaseOrderService {
     public boolean create(String productionMethod,
                           String paymentMethod,
                           String address,
-                          ShopCart cart){
+                          ShopCart cart) {
         if (productionMethod.equals("") || paymentMethod.equals("")
-            || address.equals("")){
+                || address.equals("")) {
             return false;
         }
-        PurchaseOrder order = new PurchaseOrder(address,productionMethod,paymentMethod,cart);
+        PurchaseOrder order = new PurchaseOrder(address, productionMethod, paymentMethod, cart);
         purchaseOrderRepository.save(order);
         return true;
     }
 
-    public PurchaseOrder get(Integer id){
+    public PurchaseOrder get(Integer id) {
         return purchaseOrderRepository.findById(id).get();
     }
 
-    public Iterable<PurchaseOrder> getList(Integer clientId){
+    public Iterable<PurchaseOrder> getList(Integer clientId) {
         return purchaseOrderRepository.findByClientId(clientId);
     }
 }

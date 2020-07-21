@@ -21,14 +21,14 @@ public class ShopCart {
 
 
     @JsonIgnore
-    @OneToOne(fetch = FetchType.EAGER,mappedBy = "shopCart",targetEntity = PurchaseOrder.class)
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "shopCart", targetEntity = PurchaseOrder.class)
     private PurchaseOrder purchaseOrder;
 
 
-    @OneToMany(mappedBy = "shopCart",targetEntity = ShopCartItem.class)
+    @OneToMany(mappedBy = "shopCart", targetEntity = ShopCartItem.class)
     private Set<ShopCartItem> shopCartItems;
 
-    public ShopCart(){
+    public ShopCart() {
         shopCartItems = new HashSet<ShopCartItem>();
     }
 

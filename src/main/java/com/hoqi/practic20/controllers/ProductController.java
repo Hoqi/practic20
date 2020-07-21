@@ -13,20 +13,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("products")
 public class ProductController {
-    private ProductService productService;
+    private final ProductService productService;
 
     @Autowired
-    public ProductController(ProductService productService){
+    public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
     @GetMapping
-    public Iterable<Product> getList(){
-        return productService.getList();
+    public ResponseEntity<Iterable<Product>> getList() {
+        Iterable<Product> targetProducts = productService.getList();
+        if (targetProducts != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(targetProducts);
+        } else return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Product> getOne(@PathVariable Integer id){
-        return new ResponseEntity<Product>(productService.get(id), HttpStatus.OK);
+    public ResponseEntity<Product> getOne(@PathVariable Integer id) {
+        Product targetProduct = productService.get(id);
+        if (targetProduct != null)
+            return ResponseEntity.status(HttpStatus.OK).body(targetProduct);
+        else return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }

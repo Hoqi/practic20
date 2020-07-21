@@ -14,7 +14,10 @@ Vue.component('item',{
             price : this.item.product.price
         }
     },
-    props: ['item'],
+    props: {
+        item: null,
+        items: null
+    },
     template: '<tr>' +
         '<td><strong>{{item.product.name}}</strong></td>' +
         '<td><strong>{{this.fullPrice}}</strong></td>' +
@@ -38,7 +41,7 @@ Vue.component('item',{
                     this.fullPrice -= this.price;
                 }
                 else {
-
+                    this.items.splice(this.items.indexOf(this.item), 1);
                 }
             })
         }
@@ -50,7 +53,7 @@ Vue.component('item',{
 Vue.component('items-list',{
     props: ['items'],
     template: '<table>' +
-        '<item v-for="item in items" v-bind:key="item.id" v-bind:item="item"/>' +
+        '<item v-for="item in items" v-bind:key="item.id" v-bind:item="item" v-bind:items="items"/>' +
         '</table>'
 })
 
