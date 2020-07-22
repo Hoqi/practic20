@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder, Integer> {
-    @Query("select p from PurchaseOrder p where p.shopCart.clientId= ?1")
+    @Query("select p from PurchaseOrder p where p.shopCart.clientId= ?1 and p.shopCart.status = 1")
     public Iterable<PurchaseOrder> findByClientId(Integer id);
 }

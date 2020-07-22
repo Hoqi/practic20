@@ -20,7 +20,7 @@ public class PurchaseOrder {
     private String paymentMethod;
 
 
-    @OneToOne(cascade = CascadeType.ALL,targetEntity = ShopCart.class,fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL,targetEntity = ShopCart.class)
     @JoinColumn(name = "shop_cart_id",referencedColumnName = "id")
     private ShopCart shopCart;
 

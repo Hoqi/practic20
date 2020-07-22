@@ -30,19 +30,19 @@ public class UserController {
         this.purchaseOrderService = purchaseOrderService;
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<User> getUser(@PathVariable Integer id) {
-        User user = userService.getUser(id);
+    @GetMapping()
+    public ResponseEntity<User> getUser(@RequestParam String email) {
+        User user = userService.getUser(email);
         if (user == null) {
             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<User>(user, HttpStatus.OK);
+        } else
+            return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
     @PostMapping("create")
-    public ResponseEntity<Void> createUser(@RequestBody User user) {
+    public ResponseEntity<User> createUser(@RequestBody User user) {
         if (userService.addUser(user)) {
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.status(HttpStatus.OK).body(userService.getUser(user.getEmail()));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
@@ -51,55 +51,54 @@ public class UserController {
     public ResponseEntity<Void> createCart(@PathVariable Integer id) {
         if (shopCartService.create(id)) {
             return ResponseEntity.status(HttpStatus.OK).build();
-        }
-        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } else
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
     @GetMapping("{id}/cart")
     public ResponseEntity<ShopCart> getCart(@PathVariable Integer id) {
         ShopCart targetCart = shopCartService.get(id);
-        if (targetCart != null){
+        if (targetCart != null) {
             return ResponseEntity.status(HttpStatus.OK).body(targetCart);
-        }
-        else return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PostMapping("{id}/cart/add/{vendorCode}")
     public ResponseEntity<Void> addItem(@PathVariable Integer id, @PathVariable Integer vendorCode) {
-        shopCartService.addItem(id, vendorCode);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        if (shopCartService.addItem(id, vendorCode)) {
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PostMapping("{id}/cart/delete/{vendorCode}")
     public ResponseEntity<Void> deleteItem(@PathVariable Integer id, @PathVariable Integer vendorCode) {
-        if(shopCartService.deleteOne(id, vendorCode))
+        if (shopCartService.deleteOne(id, vendorCode)) {
             return ResponseEntity.status(HttpStatus.OK).build();
+        }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PostMapping(value = "{id}/cart/submit", consumes = {"application/json"})
     public ResponseEntity<Void> submitCart(@PathVariable Integer id, @RequestBody SubmitCartRequest request) {
-        if(shopCartService.submit(id,request.getProductionMethod(),request.getPaymentMethod(),request.getAddress())){
+        if (shopCartService.submit(id, request.getProductionMethod(), request.getPaymentMethod(), request.getAddress())) {
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @GetMapping("{id}/orders")
-    public ResponseEntity<Iterable<PurchaseOrder>> getOrders(@PathVariable Integer id){
+    public ResponseEntity<Iterable<PurchaseOrder>> getOrders(@PathVariable Integer id) {
         Iterable<PurchaseOrder> targetOrder = purchaseOrderService.getList(id);
-        if (targetOrder != null){
+        if (targetOrder.iterator().hasNext()) {
             return ResponseEntity.status(HttpStatus.OK).body(targetOrder);
-        }
-        else return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @GetMapping("{id}/orders/{orderId}")
-    public ResponseEntity<PurchaseOrder> getOneOrder(@PathVariable Integer id,@PathVariable Integer orderId){
+    public ResponseEntity<PurchaseOrder> getOneOrder(@PathVariable Integer id, @PathVariable Integer orderId) {
         PurchaseOrder targetOrder = purchaseOrderService.get(orderId);
-        if (targetOrder != null){
+        if (targetOrder != null) {
             return ResponseEntity.status(HttpStatus.OK).body(targetOrder);
-        }
-        else return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }

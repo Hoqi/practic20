@@ -29,6 +29,7 @@ public class ShopCartService {
     public boolean create(Integer userId) {
         if (shopCartRepository.findByClientIdAndStatus(userId, 0) == null) {
             ShopCart newCart = new ShopCart(userId);
+            newCart.setStatus(0);
             shopCartRepository.save(newCart);
             return true;
         }
@@ -43,7 +44,7 @@ public class ShopCartService {
         ShopCart cart = shopCartRepository.findByClientIdAndStatus(userId, 0);
         Product product = productService.get(vendorCode);
         if (cart != null && product != null) {
-            ShopCartItem item = shopCartItemRepository.findByVendorCodeAndCartId(vendorCode, userId);
+            ShopCartItem item = shopCartItemRepository.findByVendorCodeAndCartId(vendorCode, cart.getId());
             if (item != null) {
                 item.setCount(item.getCount() + 1);
             } else {
@@ -59,7 +60,7 @@ public class ShopCartService {
         ShopCart cart = shopCartRepository.findByClientIdAndStatus(userId, 0);
         Product product = productService.get(vendorCode);
         if (cart != null && product != null) {
-            ShopCartItem item = shopCartItemRepository.findByVendorCodeAndCartId(vendorCode, userId);
+            ShopCartItem item = shopCartItemRepository.findByVendorCodeAndCartId(vendorCode, cart.getId());
             if (item != null) {
                 item.setCount(item.getCount() - 1);
                 if (item.getCount() == 0) deleteFull(userId, vendorCode);
@@ -74,7 +75,7 @@ public class ShopCartService {
         ShopCart cart = shopCartRepository.findByClientIdAndStatus(userId, 0);
         Product product = productService.get(vendorCode);
         if (cart != null && product != null) {
-            ShopCartItem item = shopCartItemRepository.findByVendorCodeAndCartId(vendorCode, userId);
+            ShopCartItem item = shopCartItemRepository.findByVendorCodeAndCartId(vendorCode, cart.getId());
             if (item != null) {
                 shopCartItemRepository.delete(item);
                 return true;
@@ -88,7 +89,7 @@ public class ShopCartService {
                           String paymentMethod,
                           String address) {
         ShopCart cart = shopCartRepository.findByClientIdAndStatus(userId, 0);
-        if (cart != null || cart.getShopCartItems() != null) {
+        if (cart != null && !cart.getShopCartItems().isEmpty()) {
             cart.setStatus(1);
             shopCartRepository.save(cart);
         } else return false;

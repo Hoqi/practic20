@@ -23,7 +23,7 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<Iterable<Product>> getList() {
         Iterable<Product> targetProducts = productService.getList();
-        if (targetProducts != null) {
+        if (targetProducts.iterator().hasNext()) {
             return ResponseEntity.status(HttpStatus.OK).body(targetProducts);
         } else return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
@@ -31,8 +31,8 @@ public class ProductController {
     @GetMapping("{id}")
     public ResponseEntity<Product> getOne(@PathVariable Integer id) {
         Product targetProduct = productService.get(id);
-        if (targetProduct != null)
+        if (targetProduct != null) {
             return ResponseEntity.status(HttpStatus.OK).body(targetProduct);
-        else return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }

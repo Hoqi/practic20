@@ -3,7 +3,6 @@ package com.hoqi.practic20.services;
 import com.hoqi.practic20.models.User;
 import com.hoqi.practic20.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -11,7 +10,7 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -26,8 +25,8 @@ public class UserService {
         return false;
     }
 
-    public User getUser(Integer id) {
-        return this.userRepository.findById(id).orElse(null);
+    public User getUser(String email) {
+        return this.userRepository.findByEmail(email).orElse(null);
     }
 
     public boolean ChangeEmail(Integer Id, String newEmail) {
