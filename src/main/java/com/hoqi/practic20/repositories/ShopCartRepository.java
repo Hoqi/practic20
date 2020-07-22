@@ -7,5 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 
 
 public interface ShopCartRepository extends JpaRepository<ShopCart, Integer> {
-    ShopCart findByClientIdAndStatus(Integer clientId,Integer status);
+    @Query("select c from ShopCart c where c.clientId=?1 and c.status=0")
+    ShopCart findByClientId(Integer clientId);
 }

@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Table(name = "shop_cart_item")
 public class ShopCartItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "shopCartItemID",strategy = GenerationType.AUTO)
     private int id;
 
     private double price;

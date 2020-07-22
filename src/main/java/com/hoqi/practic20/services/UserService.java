@@ -1,5 +1,7 @@
 package com.hoqi.practic20.services;
 
+import com.hoqi.practic20.exceptions.NotFoundException;
+import com.hoqi.practic20.exceptions.UserExistException;
 import com.hoqi.practic20.models.User;
 import com.hoqi.practic20.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,26 +19,26 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public boolean addUser(User user) {
-        if (!this.userRepository.findByEmail(user.getEmail()).isPresent()) {
-            this.userRepository.save(user);
-            return true;
+    public User addUser(User user) throws UserExistException {
+        if (this.userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new UserExistException("Пользователь с данным именем уже существует");
         }
-        return false;
+        this.userRepository.save(user);
+        return user;
     }
 
-    public User getUser(String email) {
-        return this.userRepository.findByEmail(email).orElse(null);
+    public User getUser(String email) throws NotFoundException {
+        return this.userRepository.findByEmail(email).orElseThrow(NotFoundException::new);
     }
 
-    public boolean ChangeEmail(Integer Id, String newEmail) {
+    public User ChangeEmail(Integer Id, String newEmail) throws NotFoundException {
         Optional<User> targetUser = this.userRepository.findById(Id);
-        if (targetUser.isPresent()) {
-            User user = targetUser.get();
-            user.setEmail(newEmail);
-            userRepository.save(user);
+        if (!targetUser.isPresent()) {
+            throw new NotFoundException("Пользователь с данным id не найден");
         }
-        return false;
-
+        User user = targetUser.get();
+        user.setEmail(newEmail);
+        userRepository.save(user);
+        return user;
     }
 }

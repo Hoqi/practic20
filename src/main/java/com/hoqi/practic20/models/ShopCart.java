@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -26,16 +27,8 @@ public class ShopCart {
 
 
     @OneToMany(mappedBy = "shopCart", targetEntity = ShopCartItem.class)
-    private Set<ShopCartItem> shopCartItems;
+    private List<ShopCartItem> shopCartItems;
 
-    public ShopCart() {
-        shopCartItems = new HashSet<ShopCartItem>();
-    }
-
-    public ShopCart(Integer client_id) {
-        this.clientId = client_id;
-        shopCartItems = new HashSet<ShopCartItem>();
-    }
 
     public Integer getId() {
         return id;
@@ -61,11 +54,11 @@ public class ShopCart {
         this.purchaseOrder = purchaseOrder;
     }
 
-    public Set<ShopCartItem> getShopCartItems() {
+    public List<ShopCartItem> getShopCartItems() {
         return shopCartItems;
     }
 
-    public void setShopCartItems(Set<ShopCartItem> shopCartItems) {
+    public void setShopCartItems(List<ShopCartItem> shopCartItems) {
         this.shopCartItems = shopCartItems;
     }
 

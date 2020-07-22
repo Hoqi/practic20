@@ -1,10 +1,18 @@
 package com.hoqi.practic20.services;
 
+import com.hoqi.practic20.exceptions.CartExistException;
+import com.hoqi.practic20.exceptions.CartIsEmptyException;
+import com.hoqi.practic20.exceptions.NotFoundException;
 import com.hoqi.practic20.models.*;
+import com.hoqi.practic20.models.requests.SubmitCartRequest;
+import com.hoqi.practic20.models.responses.GetOrderResponse;
 import com.hoqi.practic20.repositories.ShopCartItemRepository;
 import com.hoqi.practic20.repositories.ShopCartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 public class ShopCartService {
@@ -26,74 +34,50 @@ public class ShopCartService {
         this.purchaseOrderService = purchaseOrderService;
     }
 
-    public boolean create(Integer userId) {
-        if (shopCartRepository.findByClientIdAndStatus(userId, 0) == null) {
-            ShopCart newCart = new ShopCart(userId);
+    public ShopCart create(Integer userId) throws CartExistException {
+        if (shopCartRepository.findByClientId(userId) == null) {
+            ShopCart newCart = new ShopCart();
             newCart.setStatus(0);
-            shopCartRepository.save(newCart);
-            return true;
+            newCart.setClientId(userId);
+            return shopCartRepository.save(newCart);
         }
-        return false;
+        throw new CartExistException("Корзина уже существует");
     }
 
-    public ShopCart get(Integer userId) {
-        return shopCartRepository.findByClientIdAndStatus(userId, 0);
+    public ShopCart get(Integer userId) throws NotFoundException {
+        ShopCart shopCart = shopCartRepository.findByClientId(userId);
+        if (shopCart == null) throw new NotFoundException("Корзина не найдена");
+        shopCart.getShopCartItems().sort(Comparator.comparingInt(ShopCartItem::getId));
+        return shopCart;
     }
 
-    public boolean addItem(Integer userId, Integer vendorCode) {
-        ShopCart cart = shopCartRepository.findByClientIdAndStatus(userId, 0);
+
+    public ShopCart changeItemCount(Integer userId, Integer vendorCode,Integer value) throws NotFoundException {
+        ShopCart cart = shopCartRepository.findByClientId(userId);
         Product product = productService.get(vendorCode);
-        if (cart != null && product != null) {
-            ShopCartItem item = shopCartItemRepository.findByVendorCodeAndCartId(vendorCode, cart.getId());
-            if (item != null) {
-                item.setCount(item.getCount() + 1);
+        ShopCartItem item = shopCartItemRepository.findByVendorCodeAndCartId(vendorCode, cart.getId());
+        if (item != null) {
+            int newCount = item.getCount() + value;
+            if (newCount > 0){
+                item.setCount(newCount);
+                shopCartItemRepository.save(item);
             } else {
-                item = new ShopCartItem(product, cart);
-            }
-            shopCartItemRepository.save(item);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean deleteOne(Integer userId, Integer vendorCode) {
-        ShopCart cart = shopCartRepository.findByClientIdAndStatus(userId, 0);
-        Product product = productService.get(vendorCode);
-        if (cart != null && product != null) {
-            ShopCartItem item = shopCartItemRepository.findByVendorCodeAndCartId(vendorCode, cart.getId());
-            if (item != null) {
-                item.setCount(item.getCount() - 1);
-                if (item.getCount() == 0) deleteFull(userId, vendorCode);
-                else shopCartItemRepository.save(item);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean deleteFull(Integer userId, Integer vendorCode) {
-        ShopCart cart = shopCartRepository.findByClientIdAndStatus(userId, 0);
-        Product product = productService.get(vendorCode);
-        if (cart != null && product != null) {
-            ShopCartItem item = shopCartItemRepository.findByVendorCodeAndCartId(vendorCode, cart.getId());
-            if (item != null) {
                 shopCartItemRepository.delete(item);
-                return true;
             }
+        } else {
+            item = new ShopCartItem(product, cart);
+            shopCartItemRepository.save(item);
         }
-        return false;
+        return shopCartRepository.findByClientId(userId);
     }
 
-    public boolean submit(Integer userId,
-                          String productionMethod,
-                          String paymentMethod,
-                          String address) {
-        ShopCart cart = shopCartRepository.findByClientIdAndStatus(userId, 0);
-        if (cart != null && !cart.getShopCartItems().isEmpty()) {
+    public GetOrderResponse submit(Integer userId,SubmitCartRequest data) throws CartIsEmptyException,NotFoundException {
+        ShopCart cart = this.get(userId);
+        if (!cart.getShopCartItems().isEmpty()) {
             cart.setStatus(1);
             shopCartRepository.save(cart);
-        } else return false;
-        return purchaseOrderService.create(productionMethod, paymentMethod, address, cart);
+        } else throw new CartIsEmptyException("Нет товаров в корзине");
+        return purchaseOrderService.create(data, cart);
     }
 
 }

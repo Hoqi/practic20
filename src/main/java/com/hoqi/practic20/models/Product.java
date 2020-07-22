@@ -19,29 +19,14 @@ public class Product {
 
     private String description;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "product",targetEntity = ShopCartItem.class)
-
-    private Set<ShopCartItem> shopCartItems;
-
-    public Product(){
-        shopCartItems = new HashSet<ShopCartItem>();
+    public Product() {
     }
 
-    public Product(Integer vendorCode,Double price, String name, String description){
+    public Product(Integer vendorCode, Double price, String name, String description) {
         this.vendorCode = vendorCode;
         this.price = price;
         this.name = name;
         this.description = description;
-        shopCartItems = new HashSet<ShopCartItem>();
-    }
-
-    public Set<ShopCartItem> getShopCartItems() {
-        return shopCartItems;
-    }
-
-    public void setShopCartItems(Set<ShopCartItem> shopCartItems) {
-        this.shopCartItems = shopCartItems;
     }
 
     public Integer getVendorCode() {
@@ -78,6 +63,6 @@ public class Product {
 
     @Override
     public String toString() {
-        return String.format("Code: %d\nName: %s\nDescription: %s",vendorCode,name,description);
+        return String.format("Code: %d\nName: %s\nDescription: %s", vendorCode, name, description);
     }
 }
