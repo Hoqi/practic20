@@ -25,7 +25,7 @@ public class UserController {
     private final UserService userService;
     private final ShopCartService shopCartService;
     private final PurchaseOrderService purchaseOrderService;
-    private final PurchaseOrderRepository purchaseOrderRepository;
+
 
     @Autowired
     public UserController(UserService userService,
@@ -35,7 +35,6 @@ public class UserController {
         this.userService = userService;
         this.shopCartService = shopCartService;
         this.purchaseOrderService = purchaseOrderService;
-        this.purchaseOrderRepository = purchaseOrderRepository;
     }
 
     @GetMapping()
@@ -85,12 +84,6 @@ public class UserController {
     @GetMapping("{id}/orders/{orderId}")
     public ResponseEntity<PurchaseOrder> getOneOrder(@PathVariable Integer id, @PathVariable Integer orderId) throws NotFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(purchaseOrderService.get(orderId));
-    }
-
-    @GetMapping("{id}/test")
-    public ResponseEntity<List<GetOrderResponse>> getOrder(@PathVariable Integer id) {
-        List<GetOrderResponse> targetOrders = purchaseOrderRepository.findAllByClientId(id);
-        return ResponseEntity.status(HttpStatus.OK).body(targetOrders);
     }
 
     private void checkOrderParams(SubmitCartRequest request) throws OrderRejectedException {
