@@ -52,13 +52,13 @@ public class ShopCartService {
     }
 
 
-    public ShopCart changeItemCount(Integer userId, Integer vendorCode,Integer value) throws NotFoundException {
+    public ShopCart changeItemCount(Integer userId, Integer vendorCode, Integer value) throws NotFoundException {
         ShopCart cart = shopCartRepository.findByClientId(userId);
         Product product = productService.get(vendorCode);
         ShopCartItem item = shopCartItemRepository.findByVendorCodeAndCartId(vendorCode, cart.getId());
         if (item != null) {
             int newCount = item.getCount() + value;
-            if (newCount > 0){
+            if (newCount > 0) {
                 item.setCount(newCount);
                 shopCartItemRepository.save(item);
             } else {
@@ -71,7 +71,7 @@ public class ShopCartService {
         return shopCartRepository.findByClientId(userId);
     }
 
-    public GetOrderResponse submit(Integer userId,SubmitCartRequest data) throws CartIsEmptyException,NotFoundException {
+    public GetOrderResponse submit(Integer userId, SubmitCartRequest data) throws CartIsEmptyException, NotFoundException {
         ShopCart cart = this.get(userId);
         if (!cart.getShopCartItems().isEmpty()) {
             cart.setStatus(1);

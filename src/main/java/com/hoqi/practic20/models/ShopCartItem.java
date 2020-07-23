@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Table(name = "shop_cart_item")
 public class ShopCartItem {
     @Id
-    @GeneratedValue(generator = "shopCartItemID",strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "shopCartItemID", strategy = GenerationType.IDENTITY)
     private int id;
 
     private double price;
@@ -16,19 +16,19 @@ public class ShopCartItem {
     private int count;
 
     @ManyToOne(targetEntity = Product.class)
-    @JoinColumn(name = "product_id",referencedColumnName = "vendor_code")
+    @JoinColumn(name = "product_id", referencedColumnName = "vendor_code")
     private Product product;
 
     @JsonIgnore
     @ManyToOne(targetEntity = ShopCart.class)
-    @JoinColumn(name = "shop_cart_id",referencedColumnName = "id")
+    @JoinColumn(name = "shop_cart_id", referencedColumnName = "id")
     private ShopCart shopCart;
 
-    public ShopCartItem(){
+    public ShopCartItem() {
 
     }
 
-    public ShopCartItem(Product product,ShopCart cart){
+    public ShopCartItem(Product product, ShopCart cart) {
         this.shopCart = cart;
         this.product = product;
         this.price = product.getPrice();
@@ -75,7 +75,7 @@ public class ShopCartItem {
         this.shopCart = shopCart;
     }
 
-    public void IncreaseCount(){
+    public void IncreaseCount() {
         this.count++;
     }
 }

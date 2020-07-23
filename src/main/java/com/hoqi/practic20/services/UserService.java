@@ -28,7 +28,7 @@ public class UserService {
     }
 
     public User getUser(String email) throws NotFoundException {
-        return this.userRepository.findByEmail(email).orElseThrow(NotFoundException::new);
+        return this.userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
     }
 
     public User ChangeEmail(Integer Id, String newEmail) throws NotFoundException {

@@ -11,20 +11,13 @@ import java.util.Set;
 @Table(name = "shop_cart")
 public class ShopCart {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "shopCartId", strategy = GenerationType.IDENTITY)
     private Integer id;
-
 
     @Column(name = "client_id")
     private Integer clientId;
 
     private Integer status;
-
-
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "shopCart", targetEntity = PurchaseOrder.class)
-    private PurchaseOrder purchaseOrder;
-
 
     @OneToMany(mappedBy = "shopCart", targetEntity = ShopCartItem.class)
     private List<ShopCartItem> shopCartItems;
@@ -44,14 +37,6 @@ public class ShopCart {
 
     public void setClientId(Integer client) {
         this.clientId = client;
-    }
-
-    public PurchaseOrder getPurchaseOrder() {
-        return purchaseOrder;
-    }
-
-    public void setPurchaseOrder(PurchaseOrder purchaseOrder) {
-        this.purchaseOrder = purchaseOrder;
     }
 
     public List<ShopCartItem> getShopCartItems() {

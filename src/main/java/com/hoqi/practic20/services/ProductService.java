@@ -20,15 +20,15 @@ public class ProductService {
     }
 
     public Product get(Integer vendorCode) throws NotFoundException {
-        return productRepository.findById(vendorCode).orElseThrow(NotFoundException::new);
+        return productRepository.findById(vendorCode).orElseThrow(() -> new NotFoundException("Товар не найден"));
     }
 
     public List<Product> getList() throws NotFoundException {
         List<Product> products = productRepository.findAll();
-        if (products.isEmpty()){
+        if (products.isEmpty()) {
             throw new NotFoundException("Товары не найдены");
         }
         products.sort(Comparator.comparingInt(Product::getVendorCode));
-        return  products;
+        return products;
     }
 }

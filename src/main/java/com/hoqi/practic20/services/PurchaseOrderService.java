@@ -16,14 +16,12 @@ import java.util.List;
 
 @Service
 public class PurchaseOrderService {
-    private PurchaseOrderRepository purchaseOrderRepository;
+    private final PurchaseOrderRepository purchaseOrderRepository;
 
     @Autowired
     public PurchaseOrderService(PurchaseOrderRepository purchaseOrderRepository) {
         this.purchaseOrderRepository = purchaseOrderRepository;
     }
-
-    private static final DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public GetOrderResponse create(SubmitCartRequest data, ShopCart cart) throws NotFoundException {
         PurchaseOrder order = new PurchaseOrder(data.getAddress(), data.getProductionMethod(), data.getPaymentMethod(), cart);
@@ -31,7 +29,7 @@ public class PurchaseOrderService {
     }
 
     public PurchaseOrder get(Integer id) throws NotFoundException {
-        return purchaseOrderRepository.findById(id).orElseThrow(NotFoundException::new);
+        return purchaseOrderRepository.findById(id).orElseThrow(() -> new NotFoundException("Заказ не найден"));
     }
 
     public List<GetOrderResponse> getList(Integer clientId) throws NotFoundException {

@@ -10,7 +10,6 @@ var ordersApi = Vue.resource('users{/id}/orders')
 var orderSubmitApi = Vue.resource('users{/id}/cart/submit')
 
 
-
 Vue.component('item', {
     props: {
         item: null,
@@ -25,7 +24,10 @@ Vue.component('item', {
         '</tr>',
     methods: {
         inc: function () {
-            incApi.save({id: this.$root.userId, vendorCode: this.$props.item.product.vendorCode}, 'add').then(response => {
+            incApi.save({
+                id: this.$root.userId,
+                vendorCode: this.$props.item.product.vendorCode
+            }, 'add').then(response => {
                 response.json().then(data => {
                     this.refreshFn(data.shopCartItems);
                 })
@@ -35,7 +37,10 @@ Vue.component('item', {
         },
         dec: function () {
             console.log(this.item.product.vendorCode)
-            decApi.save({id: this.$root.userId, vendorCode: this.$props.item.product.vendorCode}, 'delete').then(response => {
+            decApi.save({
+                id: this.$root.userId,
+                vendorCode: this.$props.item.product.vendorCode
+            }, 'delete').then(response => {
                 response.json().then(data => {
                     this.refreshFn(data.shopCartItems);
                 })
@@ -56,10 +61,10 @@ Vue.component('cart', {
     template: '<div>' +
         '<table border="1">' +
         '<tr v-if="items.length">' +
-        '<th>Название</th>' +
-        '<th>Цена</th>' +
-        '<th>Количество</th>' +
-        '<th>Изменить количество</th>' +
+        '<th>Name</th>' +
+        '<th>Price</th>' +
+        '<th>Count</th>' +
+        '<th>Change</th>' +
         '</tr>' +
         '<item v-for="item in items" v-bind:key="item.id" v-bind:item="item" v-bind:refreshFn="refreshItems"/>' +
         '</table>' +
@@ -93,7 +98,7 @@ Vue.component('product', {
     },
     props: ['product'],
     template: '<tr> <td><strong>{{product.name}}</strong></td>  <td>{{product.description}}</td>' +
-        '<td><input type="button" value="В корзину" v-on:click="add"></td></tr>',
+        '<td><input type="button" value="To cart" v-on:click="add"></td></tr>',
     methods: {
         add: function () {
             cartApi.save({id: this.$root.userId, vendorCode: this.vendorCode}, 'add').then(response => {
@@ -113,9 +118,9 @@ Vue.component('products', {
     },
     template: '<table border="1">' +
         '<tr v-if="products.length">' +
-        '<th>Название</th>' +
-        '<th>Описание</th>' +
-        '<th>Добавить</th>' +
+        '<th>Name</th>' +
+        '<th>Description</th>' +
+        '<th>Add</th>' +
         '</tr>' +
         '<product v-for="product in products" v-bind:key="product.vendorCode" v-bind:product="product"  />' +
         '</table>',
@@ -146,7 +151,7 @@ Vue.component('login', {
     },
     template: `<div>
                     <input type="text" v-model="email" placeholder="Email"/>
-                    <input type="button" value="Вход" @click="submit"/>
+                    <input type="button" value="Login" @click="submit"/>
                </div>`,
     methods: {
         submit: function () {
@@ -157,23 +162,23 @@ Vue.component('login', {
     }
 })
 
-Vue.component('order-about',{
-    props: ['order','changeFn'],
+Vue.component('order-about', {
+    props: ['order', 'changeFn'],
     template: `<div>
                     <div>
-                        <span>Адрес: {{order.address}}</span>
+                        <span>Address: {{order.address}}</span>
                     </div>
                     <div>
-                        <span>Способ Получения: {{order.productionMethod}}</span>
+                        <span>Receipt method: {{order.productionMethod}}</span>
                     </div>
                     <div>
-                        <span>Способ оплаты: {{order.paymentMethod}}</span>
+                        <span>Payment method: {{order.paymentMethod}}</span>
                     </div>
                     <div>
                         <table border="1">
-                            <th><strong>Название</strong></th>
-                            <th><strong>Цена</strong></th>
-                            <th><strong>Количество</strong></th>
+                            <th><strong>Name</strong></th>
+                            <th><strong>Price</strong></th>
+                            <th><strong>Count</strong></th>
                             <tr v-for="item in order.shopCartItems">
                             <td>{{item.product.name}}</td>
                             <td>{{item.product.price * item.count}}</td>
@@ -195,10 +200,10 @@ Vue.component('order-form', {
     },
     template: `<div>
                     <div><span>Заказать</span></div>
-                    <div><input type="text" v-model="address" placeholder="Адрес"></div>
-                    <div><input type="text" v-model="productionMethod" placeholder="Способ получения"></div>
-                    <div><input type="text" v-model="paymentMethod" placeholder="Способ оплаты"></div>
-                    <div><input type="button" value="Подтвердить" @click="submit"></div>
+                    <div><input type="text" v-model="address" placeholder="Address"></div>
+                    <div><input type="text" v-model="productionMethod" placeholder="Receipt Method"></div>
+                    <div><input type="text" v-model="paymentMethod" placeholder="Payment Method"></div>
+                    <div><input type="button" value="Submit" @click="submit"></div>
                </div>`,
     methods: {
         submit: function () {
@@ -208,7 +213,7 @@ Vue.component('order-form', {
                 paymentMethod: this.paymentMethod
             };
             orderSubmitApi.save({id: this.$root.userId}, order).then(response => {
-                alert('Заказ успешно оформлен!');
+                alert('Order successfully completed!');
                 createCartApi.save({id: this.$root.userId}, 'create').then(response => {
                     this.$root.changeState('orders');
                 })
@@ -223,13 +228,13 @@ Vue.component('order', {
             orderId: this.order.id,
         }
     },
-    props: ['order','changeFn'],
+    props: ['order', 'changeFn'],
     template: `<tr>
                     <td>{{order.address}}</td>
                     <td>{{order.productionMethod}}</td>
                     <td>{{order.paymentMethod}}</td>
-                    <td>{{order.date}}</td>
-                    <td><input type="button" value="Подробнее" @click="changeFn(order)"/></td>
+                    <td>{{order.orderDate}}</td>
+                    <td><input type="button" value="Details" @click="changeFn(order)"/></td>
                </tr>`,
 })
 
@@ -241,10 +246,11 @@ Vue.component('orders', {
         }
     },
     template: `<table v-if="selectedOrder === null" border="1">
-                    <th><strong>Адрес</strong></th>
-                    <th><strong>Способ доставки</strong></th>
-                    <th><strong>Способ оплаты</strong></th>
-                    <th><strong>Подробнее</strong></th>
+                    <th><strong>Address</strong></th>
+                    <th><strong>Receipt method</strong></th>
+                    <th><strong>Payment method</strong></th>
+                    <th><strong>Date</strong></th>
+                    <th><strong>Details</strong></th>
                     <order v-for="order in orders" :key="order.id" :order="order" :changeFn="changeComponent"></order>
                </table>
                <order-about v-else :order="selectedOrder" :changeFn="changeComponent"/>`,
@@ -253,7 +259,7 @@ Vue.component('orders', {
             response.json().then(data => {
                 data.forEach(order => this.orders.push(order))
             })
-        }, reason => alert('Нет заказов'))
+        }, reason => alert('Orders is empty'))
     },
     methods: {
         changeComponent: function (order) {
@@ -271,8 +277,8 @@ Vue.component('registration', {
     },
     template: `<div>
                     <input type="text" v-model="email" placeholder="Email"/>
-                    <input type="text" v-model="fio" placeholder="Фио"/>
-                    <input type="button" value="Подтвердить" @click="submit" />
+                    <input type="text" v-model="fio" placeholder="Name"/>
+                    <input type="button" value="Registration" @click="submit" />
                </div>`,
     methods: {
         submit: function () {
@@ -285,7 +291,7 @@ Vue.component('registration', {
                 })
 
             }, reason => {
-                alert('Пользователь с данной почтой уже существует')
+                alert('The user with this mail already exists')
             })
         }
     }
@@ -308,11 +314,11 @@ var app = new Vue({
                </div>`,
     data: {
         title: {
-            login: 'Вход',
-            products: 'Продукты',
-            registration: 'Введите данные',
-            cart: 'Ваша корзина',
-            orders: 'Ваши заказы',
+            login: 'Login',
+            products: 'Products',
+            registration: 'Registration',
+            cart: 'Cart',
+            orders: 'Orders',
         },
         navigationState: 'login',
         pageState: 'login',

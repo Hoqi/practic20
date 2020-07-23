@@ -8,16 +8,17 @@ import javax.persistence.*;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "userId",strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String email;
 
     private String fio;
 
-    public User(){
+    public User() {
 
     }
+
     public User(String email, String fio) {
         this.email = email;
         this.fio = fio;

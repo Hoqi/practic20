@@ -7,7 +7,7 @@ import java.util.Date;
 @Table(name = "purchase_order")
 public class PurchaseOrder {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "purchaseOrderId",strategy = GenerationType.IDENTITY)
     private int id;
 
     @Temporal(TemporalType.DATE)
@@ -20,10 +20,9 @@ public class PurchaseOrder {
     private String paymentMethod;
 
 
-    @OneToOne(cascade = CascadeType.ALL,targetEntity = ShopCart.class)
-    @JoinColumn(name = "shop_cart_id",referencedColumnName = "id")
+    @OneToOne(cascade = CascadeType.ALL, targetEntity = ShopCart.class)
+    @JoinColumn(name = "shop_cart_id", referencedColumnName = "id")
     private ShopCart shopCart;
-
 
 
     public PurchaseOrder() {
